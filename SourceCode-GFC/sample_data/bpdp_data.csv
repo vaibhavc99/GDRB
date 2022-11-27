@@ -1,0 +1,9 @@
+subject,predicate,object,score
+http://dbpedia.org/resource/Alexander_Kerensky,http://dbpedia.org/ontology/birthPlace,http://dbpedia.org/resource/Ulyanovsk,1.0
+http://dbpedia.org/resource/Ernst_Mayr,http://dbpedia.org/ontology/deathPlace,"http://dbpedia.org/resource/Bedford,_Massachusetts",1.0
+http://dbpedia.org/resource/J._R._R._Tolkien,http://dbpedia.org/ontology/deathPlace,http://dbpedia.org/resource/Bournemouth,1.0
+http://dbpedia.org/resource/André_Weil,http://dbpedia.org/ontology/deathPlace,"http://dbpedia.org/resource/Princeton,_New_Jersey",1.0
+http://dbpedia.org/resource/John_A._Macdonald,http://dbpedia.org/ontology/deathPlace,http://dbpedia.org/resource/Ottawa,1.0
+http://dbpedia.org/resource/Henry_Moseley,http://dbpedia.org/ontology/birthPlace,"http://dbpedia.org/resource/Weymouth,_Dorset",1.0
+http://dbpedia.org/resource/Carlo_Goldoni,http://dbpedia.org/ontology/deathPlace,http://dbpedia.org/resource/Paris,1.0
+http://dbpedia.org/resource/Alexander_Kerensky,http://dbpedia.org/ontology/deathPlace,http://dbpedia.org/resource/New_York_City,1.0
