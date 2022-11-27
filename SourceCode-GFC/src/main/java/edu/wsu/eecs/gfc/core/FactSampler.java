@@ -43,7 +43,7 @@ public class FactSampler{
         return dataTrain;
     }
 
-    public void extract_training_asserions(String inputDir,Relation<String,String> r) throws IOException {
+    public void extract_training_asserions(String inputDir,Relation<String, String> r) throws IOException {
         dataTrain.put(true, new ArrayList<>());
         dataTrain.put(false, new ArrayList<>());
 
@@ -53,7 +53,7 @@ public class FactSampler{
         List<Edge<String, String>> posExamples = new ArrayList<>();
         List<Edge<String, String>> negExamples = new ArrayList<>();
         while ((line = br.readLine()) != null) {    
-            String[] tokens = line.split(",");
+            String[] tokens = line.split(" ");
             String snID = tokens[0].intern();
             String snLabel = tokens[1].intern();
             String dnID = tokens[3].intern();
@@ -61,9 +61,10 @@ public class FactSampler{
             String label = tokens[2].intern();
             String eclass = tokens[5].intern();
             if(snLabel==r.srcLabel() && dnLabel==r.dstLabel() && label==r.edgeLabel()){
-                Node<String> srcNode = (Node<String>) Node.createLabeledNode(snID,snLabel);
-                Node<String> dstNode = (Node<String>) Node.createLabeledNode(dnID,dnLabel); 
-                Edge<String, String> assertion = (Edge<String, String>) Edge.createLabeledEdge(srcNode,dstNode,label);
+                Node<String> srcNode = Node.createLabeledNode(snID,snLabel);
+                Node<String> dstNode = Node.createLabeledNode(dnID,dnLabel);
+                Edge<String, String> assertion = Edge.createLabeledEdge(srcNode,dstNode,label);
+
                 if(eclass == "1"){
                     posExamples.add(assertion);
                 }
@@ -94,7 +95,7 @@ public class FactSampler{
         List<Edge<String, String>> posExamples = new ArrayList<>();
         List<Edge<String, String>> negExamples = new ArrayList<>();
         while ((line = br.readLine()) != null) {
-            String[] tokens = line.split(",");
+            String[] tokens = line.split(" ");
             String snID = tokens[0].intern();
             String snLabel = tokens[1].intern();
             String dnID = tokens[3].intern();
@@ -103,8 +104,8 @@ public class FactSampler{
             String eclass = tokens[5].intern();
             if(snLabel==r.srcLabel() && dnLabel==r.dstLabel() && label==r.edgeLabel()){
                 Node<String> srcNode = Node.createLabeledNode(snID,snLabel);
-                Node<String> dstNode = Node.createLabeledNode(dnID,dnLabel); 
-                Edge<String, String> assertion = Edge.createLabeledEdge(srcNode,dstNode,label);
+                Node<String> dstNode = Node.createLabeledNode(dnID,dnLabel);
+                Edge<String, String> assertion = Edge.createLabeledEdge(srcNode,dstNode,label); 
 
                 if(eclass == "1"){
                     posExamples.add(assertion);
