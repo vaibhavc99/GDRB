@@ -28,10 +28,17 @@ def client_interface():
     client_socket.send(request4.encode())
     response4 = client_socket.recv(1024).decode()
 
-    request5 = json.dumps({"type":"test"})
-    client_socket.send(request5.encode())
-    response5 = client_socket.recv(1024).decode()
+    with open('sample_data/bpdp_data.csv', 'r') as read_obj:
+            csv_dict_reader = DictReader(read_obj)
+            for row in csv_dict_reader:
+                request5 = json.dumps({"type":"test","subject":row["subject"],"predicate":row["predicate"],"object":row["object"],"score":row["score"]})
+                client_socket.send(request5.encode())
+                response5 = client_socket.recv(1024).decode()
 
+    request6 = json.dumps({"type":"call", "content":"testing_complete"})
+    client_socket.send(request6.encode())
+    response6 = client_socket.recv(1024).decode()
+    
     print('Output: \n' + response1 + '\n' + response2 + '\n' + response3 + '\n' + response4 + '\n' + response5)
 
     client_socket.close()  # close the connection
