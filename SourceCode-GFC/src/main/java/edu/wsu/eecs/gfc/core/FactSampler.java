@@ -43,22 +43,23 @@ public class FactSampler{
         return dataTrain;
     }
 
-    public void extract_training_asserions(String inputDir,Relation<String, String> r) throws IOException {
+    public void extract_training_asserions(String inputDir,Relation<String, String> r, List<String> trainingAssertions) throws IOException {
         dataTrain.put(true, new ArrayList<>());
         dataTrain.put(false, new ArrayList<>());
 
-        BufferedReader br;
-        String line;
-        br = new BufferedReader(new FileReader(new File(inputDir, "facts_train.csv")));
+        // BufferedReader br;
+        // String line;
+        // br = new BufferedReader(new FileReader(new File(inputDir, "facts_train.csv")));
         List<Edge<String, String>> posExamples = new ArrayList<>();
         List<Edge<String, String>> negExamples = new ArrayList<>();
-        while ((line = br.readLine()) != null) {    
-            String[] tokens = line.split(" ");
+        // while ((line = br.readLine()) != null) {    
+        for(String line: trainingAssertions){
+            String[] tokens = line.split("\t");
             String snID = tokens[0].intern();
             String snLabel = tokens[1].intern();
-            String dnID = tokens[3].intern();
-            String dnLabel = tokens[4].intern();
-            String label = tokens[2].intern();
+            String dnID = tokens[2].intern();
+            String dnLabel = tokens[3].intern();
+            String label = tokens[4].intern();
             String eclass = tokens[5].intern();
             if(snLabel==r.srcLabel() && dnLabel==r.dstLabel() && label==r.edgeLabel()){
                 Node<String> srcNode = Node.createLabeledNode(snID,snLabel);
@@ -73,7 +74,7 @@ public class FactSampler{
                 }
             }
         }
-        br.close();
+        // br.close();
 
         for (int i = 0; i < posExamples.size(); i++) {
             dataTrain.get(true).add(posExamples.get(i));
@@ -85,22 +86,23 @@ public class FactSampler{
 
     }
 
-    public void extract_testing_asserions(String inputDir,Relation<String,String> r) throws IOException {
+    public void extract_testing_asserions(String inputDir,Relation<String,String> r,List<String> testingAssertions) throws IOException {
         dataTest.put(true, new ArrayList<>());
         dataTest.put(false, new ArrayList<>());
 
-        BufferedReader br;
-        String line;
-        br = new BufferedReader(new FileReader(new File(inputDir, "facts_test.csv")));
+        // BufferedReader br;
+        // String line;
+        // br = new BufferedReader(new FileReader(new File(inputDir, "facts_test.csv")));
         List<Edge<String, String>> posExamples = new ArrayList<>();
         List<Edge<String, String>> negExamples = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            String[] tokens = line.split(" ");
+        // while ((line = br.readLine()) != null) {
+        for(String line: testingAssertions){
+            String[] tokens = line.split("\t");
             String snID = tokens[0].intern();
             String snLabel = tokens[1].intern();
-            String dnID = tokens[3].intern();
-            String dnLabel = tokens[4].intern();
-            String label = tokens[2].intern();
+            String dnID = tokens[2].intern();
+            String dnLabel = tokens[3].intern();
+            String label = tokens[4].intern();
             String eclass = tokens[5].intern();
             if(snLabel==r.srcLabel() && dnLabel==r.dstLabel() && label==r.edgeLabel()){
                 Node<String> srcNode = Node.createLabeledNode(snID,snLabel);
@@ -115,7 +117,7 @@ public class FactSampler{
                 }
             }
         }
-        br.close();
+        // br.close();
 
         for (int i = 0; i < posExamples.size(); i++) {
             dataTest.get(true).add(posExamples.get(i));

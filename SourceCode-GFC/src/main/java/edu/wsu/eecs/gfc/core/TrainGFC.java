@@ -17,6 +17,7 @@ public class TrainGFC {
     private Map<String, List<OGFCRule<String, String>>> Patterns ;
     private Map<String, Classifier> Models;
     public List<String> trainingAssertions = new ArrayList<>();
+    private static ParseTriple parse = new ParseTriple();
 
     public TrainGFC() {
         
@@ -74,7 +75,7 @@ public class TrainGFC {
             String rName = r.srcLabel() + "_" + r.edgeLabel() + "_" + r.dstLabel();
 
             FactSampler sampler = new FactSampler(inputDir);
-            sampler.extract_training_asserions(inputDir,r);
+            sampler.extract_training_asserions(inputDir,r,this.trainingAssertions);
 
             bigGraph.buildSimLabelsMap(0);
 
@@ -100,8 +101,9 @@ public class TrainGFC {
 
     public void addTrainingData(String sub, String pred, String obj, String truthVal){
 
-        String assertion = sub +" " + pred +" " + obj +" " + truthVal ;
-        this.trainingAssertions.add(assertion);
-        // TODO: Conversion of RDF triples to GFC assersion format  
+        // String assertion = sub +" " + pred +" " + obj +" " + truthVal ;
+        PreProcessedTriple preprocessedTriple = parse.preprocessTriple(sub,obj,pred,truthVal);
+        String parsedAssertion = parse.parseTriples(preprocessedTriple.subject(),preprocessedTriple.object(),preprocessedTriple.predicate(),preprocessedTriple.truthValue());
+        this.trainingAssertions.add(parsedAssertion); 
     }    
 }
