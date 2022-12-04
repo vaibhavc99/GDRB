@@ -93,17 +93,10 @@ public class FactChecker {
         Instances trainSet = new Instances(rName, fvec, 20);
         trainSet.setClassIndex(dim);
 
-        // Map<String, List<List<Set<Node<VT>>>>> pMatchSet = new HashMap<String, List<List<Set<Node<VT>>>>>();
-        // List<Set<Node<VT>>> xSet = new ArrayList<Set<Node<VT>>>();
-        // List<Set<Node<VT>>> ySet = new ArrayList<Set<Node<VT>>>();
-        // List<List<Set<Node<VT>>>> pNodes = new ArrayList<List<Set<Node<VT>>>>();
-
         for (Edge<VT, ET> posTrain : dataTrain.get(true)) {
             Instance iExample = new DenseInstance(dim + 1);
             for (int i = 0; i < patternList.size(); i++) {
                 OGFCRule<VT, ET> p = patternList.get(i);
-                // xSet.add(p.matchSet().get(p.x()));
-                // ySet.add(p.matchSet().get(p.y()));
                 if (p.matchSet().get(p.x()).contains(posTrain.srcNode())
                         && p.matchSet().get(p.y()).contains(posTrain.dstNode())) {
                     iExample.setValue(fvec.get(i), 1);          
@@ -114,10 +107,6 @@ public class FactChecker {
             iExample.setValue(fvec.get(dim), "TRUE");
             trainSet.add(iExample);
         }
-        // pNodes.add(xSet);
-        // pNodes.add(ySet);
-        // pMatchSet.put(rName,pNodes);
-        // Json_Writer(pMatchSet,rName);
 
         for (Edge<VT, ET> negTrain : dataTrain.get(false)) {
             Instance iExample = new DenseInstance(dim + 1);
@@ -173,10 +162,11 @@ public class FactChecker {
      * @return
      * @throws Exception
      */
-    public static <VT, ET> String Test_LRModel(Relation<VT, ET> r, List<OGFCRule<VT,ET>> patternList,Map<String, Classifier> Models,
+    public static <VT, ET> LinkedHashMap<String, String> Test_LRModel(Relation<VT, ET> r, List<OGFCRule<VT,ET>> patternList,Map<String, Classifier> Models,
                                             Map<Boolean, List<Edge<VT, ET>>> dataTest, String outputPath) throws Exception 
     {
         String rName = r.srcLabel() + "_" + r.edgeLabel() + "_" + r.dstLabel();
+        LinkedHashMap<String,String> predictions = new  LinkedHashMap<>();
 
         // List<OGFCRule<String, String>> patternList = Patterns.get(rName);
         int dim = patternList.size();
@@ -192,9 +182,9 @@ public class FactChecker {
 
         Instances testSet = new Instances(rName, fvec, 20);
         testSet.setClassIndex(dim);
-        List<String> facts = new ArrayList<>();
+        List<Edge<VT, ET>> facts = new ArrayList<>();
         for (Edge<VT, ET> posTest : dataTest.get(true)) {
-            facts.add(posTest.toString());
+            facts.add(posTest);
             Instance iExample = new DenseInstance(dim + 1);
             for (int i = 0; i < patternList.size(); i++) {
                 OGFCRule<VT, ET> p = (OGFCRule<VT, ET>) patternList.get(i);
@@ -209,7 +199,7 @@ public class FactChecker {
             testSet.add(iExample);
         }
         for (Edge<VT, ET> negTest : dataTest.get(false)) {
-            facts.add(negTest.toString());
+            facts.add(negTest);
             Instance iExample = new DenseInstance(dim + 1);
             for (int i = 0; i < patternList.size(); i++) {
                 OGFCRule<VT, ET> p = (OGFCRule<VT, ET>) patternList.get(i);
@@ -225,7 +215,7 @@ public class FactChecker {
         }
         
         if (testSet.size() < 1) {
-            return "WARNING: Skip testing. Not enough testing examples.";
+            System.out.println("WARNING: Skip testing. Not enough testing examples.");
         }
 
         // Importing trained model
@@ -255,12 +245,13 @@ public class FactChecker {
             FileWriter outputfile = new FileWriter(file,true);
             CSVWriter writer = new CSVWriter(outputfile,',',CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
 
-            String[] header = { "Assertion", "Prediction"};
-            writer.writeNext(header);
+            // String[] header = { "Assertion", "Prediction"};
+            // writer.writeNext(header);
 
             for(int i=0; i<facts.size(); i++){
-            String[] a = { facts.get(i), result.get(i)};
-            writer.writeNext(a);
+                predictions.put(facts.get(i).toString(),result.get(i));
+                String[] a = { facts.get(i).toString(), result.get(i)};
+                writer.writeNext(a);
             }    
             writer.close();
         }
@@ -284,14 +275,15 @@ public class FactChecker {
         arffSaver = new ArffSaver();
         arffSaver.setInstances(testSet);
         try {
-            arffSaver.setFile(new File(outputPath, rName + "_" + "_Test.arff"));
+            arffSaver.setFile(new File(outputPath, rName + "_Test.arff"));
             arffSaver.writeBatch();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println("\nModel Evaluation: \n"+"\nAccuracy\tPrecision\tRecall\tFMeasure\n");
+        System.out.println(outStr);
         // String outStr = "\nModel has been Tested";
-        return outStr;
+        return predictions;
     }
 
     public static <VT> Map<String, List<List<Set<Node<VT>>>>> Json_Reader(String rName) throws IOException{
