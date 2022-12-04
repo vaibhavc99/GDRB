@@ -2,6 +2,7 @@ package edu.wsu.eecs.gfc.exps;
 import edu.wsu.eecs.gfc.core.*;
 
 import java.io.*;
+import java.util.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +69,6 @@ public class GFC {
                     }
 
                     if ((requestJSON.getString("type").equals("train"))) {
-
                         training.addTrainingData(requestJSON.getString("subject"),requestJSON.getString("predicate"),requestJSON.getString("object"),requestJSON.getString("score"));
                         requestJSON.put("type","ack");
                         requestJSON.put("content","train_ack");
@@ -85,12 +85,22 @@ public class GFC {
                     }
 
                     if ((requestJSON.getString("type").equals("test"))) {
-                        // testing.addTestingData(requestJSON.getString("subject"),requestJSON.getString("predicate"),requestJSON.getString("object"));
-                        testing.test(training.getMiner(),training.getModels(),inputDir,outputDir);
-                        requestJSON.put("type","test_result");
-                        //TODO: Individual assertion score
-                        // requestJSON.put("score",prediction);
+                        testing.addTestingData(requestJSON.getString("subject"),requestJSON.getString("predicate"),requestJSON.getString("object"),requestJSON.getString("score"));
+                        requestJSON.put("type","ack");
+                        requestJSON.put("content","test_ack");
                         outputStream.write(requestJSON.toString().getBytes(StandardCharsets.UTF_8));
+                        log.info("Request answered");
+                        continue;
+                    }
+
+                    if ((requestJSON.getString("type").equals("call")) && (requestJSON.getString("content").equals("testing_complete"))) {
+                        List<JSONObject> results = testing.test(training.getMiner(),training.getModels(),inputDir,outputDir);
+                        // requestJSON.put("type","test_result");
+                        for(JSONObject result:results){
+                            result.put("type","test_result");
+                            outputStream.write(result.toString().getBytes(StandardCharsets.UTF_8));
+                        }
+                        log.info("Request answered");
                         break;
                     }
                     log.info("Request answered");
