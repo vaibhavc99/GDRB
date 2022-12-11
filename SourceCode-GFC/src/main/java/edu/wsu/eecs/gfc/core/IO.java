@@ -127,22 +127,25 @@ public class IO {
         return relationList;
     }
 
-    public static List<Relation<String, String>> loadRelations(String inputDir) throws IOException {
+    public static List<Relation<String, String>> loadRelations(String inputDir,List<String> Assertions) throws IOException {
         List<Relation<String, String>> relationList = new ArrayList<>();
-        BufferedReader br;
-        String line;
-        br = new BufferedReader(new FileReader(new File(inputDir, "gfc_input_relations.tsv")));
-        while ((line = br.readLine()) != null) {
-            if (!line.isEmpty() && !line.startsWith("#")) {
-                String[] tokens = line.split("\t");
-                String srcLabel = tokens[0].intern();
-                String dstLabel = tokens[1].intern();
-                String edgeLabel = tokens[2].intern();
-                Relation<String, String> r = Relation.createRelation(srcLabel, dstLabel, edgeLabel);
+        // BufferedReader br;
+        // String line;
+        // br = new BufferedReader(new FileReader(new File(inputDir, "gfc_input_relations.tsv")));
+        // while ((line = br.readLine()) != null) {
+        for(String line: Assertions){
+            // if (!line.isEmpty() && !line.startsWith("#")) {
+            String[] tokens = line.split("\t");
+            String srcLabel = tokens[1].intern();
+            String dstLabel = tokens[3].intern();
+            String edgeLabel = tokens[4].intern();
+            Relation<String, String> r = Relation.createRelation(srcLabel, dstLabel, edgeLabel);
+            if(!relationList.contains(r)) {
                 relationList.add(r);
             }
+            // }
         }
-        br.close();
+        // br.close();
         return relationList;
     }
 
