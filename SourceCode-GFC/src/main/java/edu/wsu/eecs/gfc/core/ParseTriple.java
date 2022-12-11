@@ -120,20 +120,22 @@ public class ParseTriple {
     }
 
     public static String getSubjectRelation(String subject, String predicate) {
-        if (str_nodes.containsKey(subject)) {
-            return str_nodes.get(subject);
-        } else {
-            return getSubjectObjectOntology(predicate, "subject");
-        }
+        // if (str_nodes.containsKey(subject)) {
+        //     return str_nodes.get(subject);
+        // } else {
+        //     return getSubjectObjectOntology(predicate, "subject");
+        // }
+        return getSubjectObjectOntology(predicate, "subject");
     }
 
     public static String getObjectRelation(String object, String predicate){
-        if(str_nodes.containsKey(object)){
-            return str_nodes.get(object);
-        }
-        else{
-            return getSubjectObjectOntology(predicate,"object");
-        }
+        // if(str_nodes.containsKey(object)){
+        //     return str_nodes.get(object);
+        // }
+        // else{
+        //     return getSubjectObjectOntology(predicate,"object");
+        // }
+        return getSubjectObjectOntology(predicate,"object");
     }
 
     // public static void main(String[] args) {

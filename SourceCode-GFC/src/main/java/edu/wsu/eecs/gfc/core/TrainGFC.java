@@ -40,8 +40,6 @@ public class TrainGFC {
     public void train(String inputDir,String outputDir,double minSupp,double minConf,int maxSize,int topK) throws Exception {
 
         new File(outputDir).mkdirs();
-        // new File("Trained_Models").mkdirs();
-        // new File("Patterns").mkdirs();
 
         System.out.println("Configurations:"
                 + "\nInputDir = " + inputDir
@@ -65,7 +63,7 @@ public class TrainGFC {
         System.out.println("BigGraph: " + bigGraph.toSizeString());
 
         System.out.println("Loading the input relations....");
-        List<Relation<String, String>> relationList = IO.loadRelations(inputDir);
+        List<Relation<String, String>> relationList = IO.loadRelations(inputDir,this.trainingAssertions);
 
         this.miner = RuleMiner.createInit(bigGraph, minSupp, minConf, maxSize, topK);
 
@@ -82,11 +80,6 @@ public class TrainGFC {
             Stopwatch w = Stopwatch.createStarted();
             List<OGFCRule<String, String>> patterns = miner.OGFC_stream(r, sampler.getDataTrain().get(true), sampler.getDataTrain().get(false));
             w.stop();
-            // Patterns.put(rName,patterns);
-            // Gson gson = new Gson();
-            // Writer writer = Files.newBufferedWriter(Paths.get("./Patterns/"+rName+".json"));
-            // gson.toJson(patterns, writer);
-            // writer.close();
 
             System.out.println("Discovered number of patterns: |P| = " + patterns.size() + ", Time = " + w.elapsed(TimeUnit.SECONDS));
 

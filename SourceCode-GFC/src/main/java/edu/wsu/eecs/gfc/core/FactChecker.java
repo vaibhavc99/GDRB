@@ -84,8 +84,8 @@ public class FactChecker {
             fvec.add(new Attribute("P" + i));
         }
         ArrayList<String> classVals = new ArrayList<>(2);
-        classVals.add("TRUE");
-        classVals.add("FALSE");
+        classVals.add("1.0");
+        classVals.add("0.0");
         Attribute attrClass = new Attribute("class", classVals);
         fvec.add(attrClass);
 
@@ -104,7 +104,7 @@ public class FactChecker {
                     iExample.setValue(fvec.get(i), 0);
                 }
             }
-            iExample.setValue(fvec.get(dim), "TRUE");
+            iExample.setValue(fvec.get(dim), "1.0");
             trainSet.add(iExample);
         }
 
@@ -119,12 +119,13 @@ public class FactChecker {
                     iExample.setValue(fvec.get(i), 0);
                 }
             }
-            iExample.setValue(fvec.get(dim), "FALSE");
+            iExample.setValue(fvec.get(dim), "0.0");
             trainSet.add(iExample);
         }
-        // if (trainSet.size() < 1) {
-        //     return "WARNING: Skip training. Not enough training examples.";
-        // }
+        if (trainSet.size() < 1) {
+            System.out.println("WARNING: Skip training. Not enough training examples.");
+            return null;
+        }
 
         Classifier model = new Logistic();
         model.buildClassifier(trainSet);
@@ -175,8 +176,8 @@ public class FactChecker {
             fvec.add(new Attribute("P" + i));
         }
         ArrayList<String> classVals = new ArrayList<>(2);
-        classVals.add("TRUE");
-        classVals.add("FALSE");
+        classVals.add("1.0");
+        classVals.add("0.0");
         Attribute attrClass = new Attribute("class", classVals);
         fvec.add(attrClass);
 
@@ -195,7 +196,7 @@ public class FactChecker {
                     iExample.setValue(fvec.get(i), 0);
                 }
             }
-            iExample.setValue(fvec.get(dim), "TRUE");
+            iExample.setValue(fvec.get(dim), "1.0");
             testSet.add(iExample);
         }
         for (Edge<VT, ET> negTest : dataTest.get(false)) {
@@ -210,12 +211,13 @@ public class FactChecker {
                     iExample.setValue(fvec.get(i), 0);
                 }
             }
-            iExample.setValue(fvec.get(dim), "FALSE");
+            iExample.setValue(fvec.get(dim), "0.0");
             testSet.add(iExample);
         }
         
         if (testSet.size() < 1) {
             System.out.println("WARNING: Skip testing. Not enough testing examples.");
+            return null;
         }
 
         // Importing trained model
@@ -260,15 +262,20 @@ public class FactChecker {
         }
 
         Evaluation eval = new Evaluation(testSet);
-        eval.crossValidateModel(model, testSet, 3, new Random(1));
-
+        if(testSet.size()>10){
+            eval.crossValidateModel(model, testSet, 10, new Random(1));
+        }
+        else{
+            eval.crossValidateModel(model, testSet, testSet.size(), new Random(1));
+        }
+        
         // Evaluation eval = new Evaluation(trainSet);
         // eval.evaluateModel(model, testSet);
         // System.out.println("\nAccuracy: \n"+eval.pctCorrect()+"\n");
         
-        String outStr = (eval.pctCorrect() / 100) + "\t" +
-                (eval.precision(0)) + "\t" +
-                (eval.recall(0)) + "\t" +
+        String outStr = (eval.pctCorrect() / 100) + "\t     " +
+                (eval.precision(0)) + "\t     " +
+                (eval.recall(0)) + "\t     " +
                 (eval.fMeasure(0));
 
         ArffSaver arffSaver;
@@ -280,7 +287,7 @@ public class FactChecker {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("\nModel Evaluation: \n"+"\nAccuracy\tPrecision\tRecall\tFMeasure\n");
+        System.out.println("\nModel Evaluation for: "+rName+"\n"+"\nAccuracy     Precision     Recall     FMeasure");
         System.out.println(outStr);
         // String outStr = "\nModel has been Tested";
         return predictions;
