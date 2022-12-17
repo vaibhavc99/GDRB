@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
  * The caller to test GFC mining.
  * @author Peng Lin penglin03@gmail.com
@@ -23,6 +22,7 @@ public class GFC {
     private static TrainGFC training = new TrainGFC();
     private static TestGFC testing = new TestGFC();
     public static LinkedHashMap<String,String> results = new  LinkedHashMap<>();
+    public static Boolean firstIteration = true;
 
     public static void listen(int port,String inputDir,String outputDir,double minSupp,double minConf,int maxSize,int topK) throws Exception {
 
@@ -36,17 +36,17 @@ public class GFC {
                     InputStream input = client.getInputStream();
                     DataOutputStream outputStream  = new DataOutputStream(client.getOutputStream());
                     DataInputStream dis = new DataInputStream(input);
-                    byte[] buffer = new byte[1024];
                     while(true) {
                         log.info("Waiting for a request");
+                        byte[] buffer = new byte[1024];
                         dis.read(buffer);
                         String request = new String(buffer, StandardCharsets.UTF_8).trim();
 
-                        if(request.equals(null)){
+                        if(request.equals("")){
                             log.info("Connection closed");
                             client.close();
                             dis.close();
-                            return;
+                            break;
                         }
                         log.info("Request received: " + request);
 
@@ -84,33 +84,26 @@ public class GFC {
                             outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8)); 
                         }
 
-                        if ((requestJSON.getString("type").equals("call")) && (requestJSON.getString("content").equals("testing_start"))) {
-                            JSONObject response = new JSONObject();
-                            response.put("type","ack");
-                            response.put("content","testing_start_ack");
-                            outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8));
-                        }
-
-                        if ((requestJSON.getString("type").equals("testGFC"))) {
+                        if ((firstIteration) && (requestJSON.getString("type").equals("test"))) {
                             testing.addTestingData(requestJSON.getString("subject"),requestJSON.getString("predicate"),requestJSON.getString("object"),requestJSON.getString("score"));
                             JSONObject response = new JSONObject();
                             response.put("type","ack");
-                            response.put("content","testGFC_ack");
+                            response.put("content","test_ack");
                             outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8));
                             log.info("Request answered");
                             continue;
                         }
 
-                        if ((requestJSON.getString("type").equals("call")) && (requestJSON.getString("content").equals("testing_complete"))) {
+                        if ((requestJSON.getString("type").equals("call")) && (requestJSON.getString("content").equals("test_upload_complete"))) {
                             results = testing.test(training.getMiner(),training.getModels(),inputDir,outputDir);
+                            firstIteration = false;
                             JSONObject response = new JSONObject();
                             response.put("type","ack");
-                            response.put("content","testing_complete_ack");
+                            response.put("content","test_upload_complete_ack");
                             outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8));
-                            log.info("Request answered");
                         }
 
-                        if ((requestJSON.getString("type").equals("test"))) {
+                        if ((!firstIteration) && (requestJSON.getString("type").equals("test"))) {
                             String requestAssertion = requestJSON.getString("subject") + " " + requestJSON.getString("predicate") + " " +
                                                     requestJSON.getString("object");
                             String score = results.get(requestAssertion);
@@ -145,8 +138,5 @@ public class GFC {
         int topK = Integer.parseInt(args[5]);
 
         listen(4011,inputDir,outputDir,minSupp,minConf,maxSize,topK);
-        // TrainGFC training = new TrainGFC();
-        // training.train(inputDir,outputDir,minSupp,minConf,maxSize,topK);
-        // TestGFC.test(training.getMiner(),training.getModels(),inputDir,outputDir);
     }
 }
