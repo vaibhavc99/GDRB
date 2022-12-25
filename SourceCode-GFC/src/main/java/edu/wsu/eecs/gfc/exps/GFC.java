@@ -24,6 +24,17 @@ public class GFC {
     public static LinkedHashMap<String,String> results = new  LinkedHashMap<>();
     public static Boolean firstIteration = true;
 
+    /**
+     * This method listens and responds to the requests made by the FaVEL through the TCP port.
+     * @param port
+     * @param inputDir
+     * @param outputDir
+     * @param minSupp
+     * @param minConf
+     * @param maxSize
+     * @param topK
+     * @throws Exception
+     */
     public static void listen(int port,String inputDir,String outputDir,double minSupp,double minConf,int maxSize,int topK) throws Exception {
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -66,6 +77,7 @@ public class GFC {
                             outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8));
                         }
 
+                        // Receives training assertions from FaVEL 
                         if ((requestJSON.getString("type").equals("train"))) {
                             training.addTrainingData(requestJSON.getString("subject"),requestJSON.getString("predicate"),requestJSON.getString("object"),requestJSON.getString("score"));
                             JSONObject response = new JSONObject();
@@ -75,7 +87,8 @@ public class GFC {
                             log.info("Request answered");
                             continue;
                         }
-                        
+                
+                        // Trains the supervised learning models after whole training data is received
                         if ((requestJSON.getString("type").equals("call")) && (requestJSON.getString("content").equals("training_complete"))) {
                             training.train(inputDir,outputDir,minSupp,minConf,maxSize,topK);
                             JSONObject response = new JSONObject();
@@ -84,6 +97,7 @@ public class GFC {
                             outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8)); 
                         }
 
+                        // Receives testing assertions from FaVEL
                         if ((firstIteration) && (requestJSON.getString("type").equals("test"))) {
                             testing.addTestingData(requestJSON.getString("subject"),requestJSON.getString("predicate"),requestJSON.getString("object"),requestJSON.getString("score"));
                             JSONObject response = new JSONObject();
@@ -94,6 +108,7 @@ public class GFC {
                             continue;
                         }
 
+                        // Classifies the testing data and results are stored in hashmap
                         if ((requestJSON.getString("type").equals("call")) && (requestJSON.getString("content").equals("test_upload_complete"))) {
                             results = testing.test(training.getMiner(),training.getModels(),inputDir,outputDir);
                             firstIteration = false;
@@ -103,6 +118,7 @@ public class GFC {
                             outputStream.write(response.toString().getBytes(StandardCharsets.UTF_8));
                         }
 
+                        // Classification results are sent to the FaVEL as scores
                         if ((!firstIteration) && (requestJSON.getString("type").equals("test"))) {
                             String requestAssertion = requestJSON.getString("subject") + " " + requestJSON.getString("predicate") + " " +
                                                     requestJSON.getString("object");

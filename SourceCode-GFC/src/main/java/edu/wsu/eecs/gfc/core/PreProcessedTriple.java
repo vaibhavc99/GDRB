@@ -2,6 +2,9 @@ package edu.wsu.eecs.gfc.core;
 
 import java.util.Objects;
 
+/**
+ * Creates a preprocessed rdf triple having Subject, Predicate, Object and Truth value
+ */
 final class PreProcessedTriple {
     private final String subject;
     private final String object;
