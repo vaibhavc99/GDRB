@@ -17,8 +17,6 @@ public class ParseTriple {
         readStrNodeFile();
     }
 
-    // record PreProcessedTriple(String subject, String object, String predicate, int truthValue){ }
-
     public static String getPredicate(String predicate) {
         if (predicate.equals("<starring>"))
             return "<actedIn>";
@@ -124,27 +122,13 @@ public class ParseTriple {
     }
 
     public static String getSubjectRelation(String subject, String predicate) {
-        // if (str_nodes.containsKey(subject)) {
-        //     return str_nodes.get(subject);
-        // } else {
-        //     return getSubjectObjectOntology(predicate, "subject");
-        // }
+
         return getSubjectObjectOntology(predicate, "subject");
     }
 
     public static String getObjectRelation(String object, String predicate){
-        // if(str_nodes.containsKey(object)){
-        //     return str_nodes.get(object);
-        // }
-        // else{
-        //     return getSubjectObjectOntology(predicate,"object");
-        // }
+
         return getSubjectObjectOntology(predicate,"object");
     }
 
-    // public static void main(String[] args) {
-    //     readStrNodeFile();
-    //     PreProcessedTriple preprocessedTriple = preprocessTriple("http://dbpedia.org/resource/Kinsey_(film)","http://dbpedia.org/resource/Tim_Curry","http://dbpedia.org/ontology/starring",1);
-    //     System.out.println(parseTriples(preprocessedTriple.subject(),preprocessedTriple.object(),preprocessedTriple.predicate(),preprocessedTriple.truthValue()));
-    // }
 }

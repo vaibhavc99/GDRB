@@ -140,8 +140,6 @@ public class FactChecker {
 
         Classifier model = new Logistic();
         model.buildClassifier(trainSet);
-        
-        // weka.core.SerializationHelper.write("./Trained_Models/"+rName+"_LR.model", model);
 
         ArffSaver arffSaver;
         arffSaver = new ArffSaver();
@@ -153,7 +151,6 @@ public class FactChecker {
             e.printStackTrace();
         }
 
-        // String Outstr = "\nModels have been trained with Logistic Regression";
         return model;
     }
 
@@ -181,7 +178,6 @@ public class FactChecker {
         String rName = r.srcLabel() + "_" + r.edgeLabel() + "_" + r.dstLabel();
         LinkedHashMap<String,String> predictions = new  LinkedHashMap<>();
 
-        // List<OGFCRule<String, String>> patternList = Patterns.get(rName);
         int dim = patternList.size();
         ArrayList<Attribute> fvec = new ArrayList<>(dim + 1);
         for (int i = 0; i < dim; i++) {
@@ -232,17 +228,6 @@ public class FactChecker {
             return null;
         }
 
-        // Importing trained model
-        // Classifier model = null;
-        // try {
-        //     model = (Classifier) weka.core.SerializationHelper
-        //             .read("./Trained_Models/"+rName+"_LR.model");
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-        // if (model == null)
-        //     return null;
-        
         Classifier model = Models.get(rName);
 
         List<String> result = new ArrayList<>();
@@ -258,9 +243,6 @@ public class FactChecker {
         try {
             FileWriter outputfile = new FileWriter(file,true);
             CSVWriter writer = new CSVWriter(outputfile,',',CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-
-            // String[] header = { "Assertion", "Prediction"};
-            // writer.writeNext(header);
 
             for(int i=0; i<facts.size(); i++){
                 predictions.put(facts.get(i).toString(),result.get(i));
@@ -301,7 +283,7 @@ public class FactChecker {
         }
         System.out.println("\nModel Evaluation for: "+rName+"\n"+"\nAccuracy     Precision     Recall     FMeasure");
         System.out.println(outStr);
-        // String outStr = "\nModel has been Tested";
+
         return predictions;
     }
 

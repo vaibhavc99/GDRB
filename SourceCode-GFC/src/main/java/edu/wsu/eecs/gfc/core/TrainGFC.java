@@ -5,11 +5,8 @@ import com.google.common.base.Stopwatch;
 import weka.classifiers.Classifier;
 
 import java.io.*;
-// import java.nio.file.Files;
-// import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-// import com.google.gson.Gson; 
+import java.util.concurrent.TimeUnit; 
 
 /**
  * Training of facts is done here.
@@ -98,8 +95,6 @@ public class TrainGFC {
 
             System.out.println("Discovered number of patterns: |P| = " + patterns.size() + ", Time = " + w.elapsed(TimeUnit.SECONDS));
 
-            // System.out.println("\nTraining: "
-            //         + FactChecker.Train_LRModel(patterns, r, sampler.getDataTrain(), outputDir));
             Classifier model = FactChecker.Train_LRModel(patterns, r, sampler.getDataTrain(), outputDir);
             Models.put(rName,model);
 
@@ -109,7 +104,6 @@ public class TrainGFC {
 
     public void addTrainingData(String sub, String pred, String obj, String truthVal){
 
-        // String assertion = sub +" " + pred +" " + obj +" " + truthVal ;
         PreProcessedTriple preprocessedTriple = parse.preprocessTriple(sub,obj,pred,truthVal);
         String parsedAssertion = parse.parseTriples(preprocessedTriple.subject(),preprocessedTriple.object(),preprocessedTriple.predicate(),preprocessedTriple.truthValue());
         this.trainingAssertions.add(parsedAssertion); 
