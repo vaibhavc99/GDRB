@@ -6,6 +6,11 @@ import weka.classifiers.Classifier;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Testing of facts is done here.
+ * Testing data is transformed into GFC format and stored in the list.
+ * Predicted classification results are stored in a hash map.
+ */
 public class TestGFC {
 
     public List<String> testingAssertions = new ArrayList<>();
@@ -14,6 +19,15 @@ public class TestGFC {
 
     private static ParseTriple parse = new ParseTriple();
 
+    /**
+     * Test method
+     * @param miner
+     * @param Models
+     * @param inputDir
+     * @param outputPath
+     * @return
+     * @throws Exception
+     */
     public LinkedHashMap<String,String> test(RuleMiner<String, String> miner,Map<String, Classifier> Models,String inputDir,String outputPath) 
                             throws Exception {
 

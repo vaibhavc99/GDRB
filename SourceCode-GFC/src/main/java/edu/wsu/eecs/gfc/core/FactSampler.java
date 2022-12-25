@@ -43,6 +43,13 @@ public class FactSampler{
         return dataTrain;
     }
 
+    /**
+     * Training assertions are extracted and separated into positive and negative data
+     * @param inputDir
+     * @param r
+     * @param trainingAssertions
+     * @throws IOException
+     */
     public void extract_training_asserions(String inputDir,Relation<String, String> r, List<String> trainingAssertions) throws IOException {
         dataTrain.put(true, new ArrayList<>());
         dataTrain.put(false, new ArrayList<>());
@@ -86,6 +93,13 @@ public class FactSampler{
 
     }
 
+    /**
+     * Testing assertions are extracted and separated into positive and negative data
+     * @param inputDir
+     * @param r
+     * @param testingAssertions
+     * @throws IOException
+     */
     public void extract_testing_asserions(String inputDir,Relation<String,String> r,List<String> testingAssertions) throws IOException {
         dataTest.put(true, new ArrayList<>());
         dataTest.put(false, new ArrayList<>());

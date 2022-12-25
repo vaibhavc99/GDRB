@@ -5,6 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * The transformation of the RDF triple received from FaVEL is done here.
+ * Triple is transformed to the format used by FactChecker 
+ */
 public class ParseTriple {
 
     static HashMap<String, String> str_nodes = new HashMap<>();

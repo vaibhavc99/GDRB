@@ -74,6 +74,17 @@ public class FactChecker {
         return outStr;
     }
 
+    /**
+     * Method to train the logistic regression models
+     * @param <VT>
+     * @param <ET>
+     * @param patternList
+     * @param r
+     * @param dataTrain
+     * @param outputPath
+     * @return Trained models
+     * @throws Exception
+     */
     public static <VT, ET> Classifier Train_LRModel(List<OGFCRule<VT, ET>> patternList, Relation<VT, ET> r,
                                                               Map<Boolean, List<Edge<VT, ET>>> dataTrain, String outputPath) 
                                                               throws Exception 
@@ -154,13 +165,14 @@ public class FactChecker {
     } 
     
     /**
+     * Method to test the logistic regression models
      * @param <VT>
      * @param <ET>
      * @param patternList
      * @param r
      * @param dataTest
      * @param outputPath
-     * @return
+     * @return Predicted results in Hash map
      * @throws Exception
      */
     public static <VT, ET> LinkedHashMap<String, String> Test_LRModel(Relation<VT, ET> r, List<OGFCRule<VT,ET>> patternList,Map<String, Classifier> Models,

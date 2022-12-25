@@ -11,6 +11,11 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 // import com.google.gson.Gson; 
 
+/**
+ * Training of facts is done here.
+ * Training data is transformed into GFC format and stored in the list.
+ * Trained models are stored in a map.
+ */
 public class TrainGFC {
     private static final int GLOBAL_HOPS = 2;
     private RuleMiner<String, String> miner ;
@@ -37,6 +42,16 @@ public class TrainGFC {
         return Models;
     }
 
+    /**
+     * Train method
+     * @param inputDir
+     * @param outputDir
+     * @param minSupp
+     * @param minConf
+     * @param maxSize
+     * @param topK
+     * @throws Exception
+     */
     public void train(String inputDir,String outputDir,double minSupp,double minConf,int maxSize,int topK) throws Exception {
 
         new File(outputDir).mkdirs();
