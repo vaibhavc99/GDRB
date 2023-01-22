@@ -6,7 +6,7 @@ This forked repository was developed for integration with the [FaVEL](https://gi
 
 This fork is a derivative of the [GDRB](https://github.com/wsu-db/GDRB), which was originally developed by [Peng Lin](http://eecs.wsu.edu/~plin1). The purpose of this fork is to extend or modify the functionality of the original project. 
 
-This fork introduces a new feature in the form of a Transmission Control Protocol (TCP) interface. This interface enables the submission of assertions as inputs to the GFC, rather than sampling the assertions from a knowledge graph. Additionally, this fork implements a separation of the training and testing phases to allow for distinct utilization of the two processes."
+This fork introduces a new feature in the form of a Transmission Control Protocol (TCP) interface. This interface enables the submission of assertions as inputs to the GFC, rather than sampling the assertions from a knowledge graph. Additionally, this fork implements a separation of the training and testing phases to allow for distinct utilization of the two processes.
 
 ## Quick build
 
